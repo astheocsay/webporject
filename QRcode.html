@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>生成二维码</title>
+
+    <script type="text/javascript" src="lib/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="lib/jquery.qrcode.min.js"></script>
+    <script type="text/javascript" src="lib/angular.min.js"></script>
+</head>
+<body ng-app = "myApp" ng-controller="myCtrl">
+<h2>请输入您要生成的语句:</h2>
+<div>
+    <input type="text" ng-model="input" >
+    <button ng-click = "tocha()">生成</button>
+    <br/>
+    您输入的是:{{input}}
+</div>
+<h2>生成的二维码如下:</h2>
+<div id="qrcode"></div>
+<script type="text/javascript">
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function ($scope) {
+        $scope.input = "www.astheocsay.com";
+        jQuery('#qrcode').qrcode($scope.input);
+        $scope.tocha = function() {
+            $('#qrcode').html("");
+            jQuery('#qrcode').qrcode(utf16to8($scope.input));
+        }
+    });
+    function utf16to8(str) {
+        var out, i, len, c;
+        out = "";
+        len = str.length;
+        for(i = 0; i < len; i++) {
+            c = str.charCodeAt(i);
+            if ((c >= 0x0001) && (c <= 0x007F)) {
+                out += str.charAt(i);
+            } else if (c > 0x07FF) {
+                out += String.fromCharCode(0xE0 | ((c >> 12) & 0x0F));
+                out += String.fromCharCode(0x80 | ((c >>  6) & 0x3F));
+                out += String.fromCharCode(0x80 | ((c >>  0) & 0x3F));
+            } else {
+                out += String.fromCharCode(0xC0 | ((c >>  6) & 0x1F));
+                out += String.fromCharCode(0x80 | ((c >>  0) & 0x3F));
+            }
+        }
+        return out;
+    }
+</script>
+</body>
+</html>
